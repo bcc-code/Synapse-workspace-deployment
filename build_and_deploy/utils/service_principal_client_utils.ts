@@ -102,16 +102,19 @@ export async function getWorkspaceLocation(params: Params, targetWorkspace: stri
                 'Authorization': 'Bearer ' + params.bearer
             }
 
-            let url = `${resourceManagerEndpointUrl}subscriptions/${subscriptionId}/` +
+            let url = `${resourceManagerEndpointUrl}subscriptions/${ subscriptionId}/` +
                 `resourceGroups/${resourceGroup}/providers/Microsoft.Synapse/workspaces/` +
                 `${targetWorkspace}?api-version=2019-06-01-preview`;
 
 
-            SystemLogger.info(`Requesting workspace: ${url}; resourceManagerEndpointUrl: ${resourceManagerEndpointUrl}, subscriptionId: ${subscriptionId}, resourceGroup: ${resourceGroup}`);
+            SystemLogger.info(`Requesting workspace: ${url}; resourceManagerEndpointUrl: ${resourceManagerEndpointUrl}, subscriptionId: ${Buffer.from(subscriptionId).toString('base64')}, resourceGroup: ${resourceGroup}`);
             client.get(url, headers).then(async (res) => {
                 let resStatus = res.message.statusCode;
                 if (resStatus != 200 && resStatus != 201 && resStatus != 202) {
                     SystemLogger.info(`Unable to fetch location of workspace, status: ${resStatus}; status message: ${res.message.statusMessage}`);
+                    var content = res.readBody().then(async (body) => {
+                        SystemLogger.info(`Response body: ${body}`);
+                    })
                     return reject(DeployStatus.failed);
                 }
 
