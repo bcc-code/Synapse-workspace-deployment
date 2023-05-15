@@ -107,7 +107,7 @@ export async function getWorkspaceLocation(params: Params, targetWorkspace: stri
                 `${targetWorkspace}?api-version=2019-06-01-preview`;
 
 
-            SystemLogger.info(`Requesting workspace: ${url}; resourceManagerEndpointUrl: ${resourceManagerEndpointUrl}, subscriptionId: ${Buffer.from(subscriptionId).toString('base64')}, resourceGroup: ${resourceGroup}`);
+            SystemLogger.info(`Requesting workspace: ${url}; resourceManagerEndpointUrl: ${resourceManagerEndpointUrl}, subscriptionId (enc): ${Buffer.from(subscriptionId).toString('base64')}, resourceGroup: ${resourceGroup}`);
             client.get(url, headers).then(async (res) => {
                 let resStatus = res.message.statusCode;
                 if (resStatus != 200 && resStatus != 201 && resStatus != 202) {
